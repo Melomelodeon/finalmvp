@@ -4,6 +4,7 @@ import axios from "axios";
 import Footer from "./components/Footer";
 
 import { API_BASE } from "./config";
+import ChatbotWidget from "./components/ChatbotWidget";
 
 export default function AdminDashboard() {
   const [totalUser, setTotalUsers] = useState(0);
@@ -395,6 +396,7 @@ function TopUsers({ topMentor, topMentee }) {
           </span>
         </div>
       </div>
+      <ChatbotWidget />
     </div>
   );
 }
