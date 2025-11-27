@@ -80,7 +80,7 @@ public function distribution()
             $target = $uploadDir . $filename;
             
             if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $target)) {
-                $profileImage = "http://localhost:3000/public/uploads/" . $filename;
+                $profileImage = "https://finalmvp.onrender.com/public/uploads/" . $filename;
             }
         }
 
@@ -116,7 +116,7 @@ public function distribution()
             $target = $uploadDir . $filename;
             
             if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $target)) {
-                $profileImage = "http://localhost:3000/public/uploads/" . $filename;
+                $profileImage = "https://finalmvp.onrender.com/public/uploads/" . $filename;
             }
         }
 
