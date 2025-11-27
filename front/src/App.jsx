@@ -118,7 +118,10 @@ export default function App() {
             path="/"
             element={
               <PeerConnectLanding
-                onLoginSuccess={(userData) => setUser(userData.user)}
+                onLoginSuccess={(userData) => {
+                  const u = userData?.user || userData || null;
+                  if (u) setUser(u);
+                }}
               />
             }
           />

@@ -110,35 +110,62 @@ function LoginPage({
                   remember: form.remember,
                 });
 
-                // Save token & user info
-                const storage = form.remember ? localStorage : sessionStorage;
-                if (res.data.token)
-                  storage.setItem("auth_token", res.data.token);
-                if (res.data.user)
-                  storage.setItem("user", JSON.stringify(res.data.user));
-                if (res.data.role) storage.setItem("user_role", res.data.role);
-                if (res.data.id) storage.setItem("user_id", res.data.id);
+                // Normalize response payload and persist auth/user reliably
+                const payload = res.data || {};
 
+                // Try common token/user locations returned by various backends
+                const token =
+                  payload.token ||
+                  payload.accessToken ||
+                  payload.data?.token ||
+                  payload.data?.accessToken ||
+                  null;
+
+                const user = payload.user || payload.data?.user || payload || null;
+
+                // Prefer localStorage only when remember is true
+                const storage = form.remember ? localStorage : sessionStorage;
+
+                if (token) storage.setItem("auth_token", token);
+                if (user) storage.setItem("user", JSON.stringify(user));
+                if (payload.role) storage.setItem("user_role", payload.role);
+                if (payload.id) storage.setItem("user_id", payload.id);
+
+                // Debug log for deployed verification
+                console.debug("Login response payload:", payload);
+
+                // Notify parent BEFORE navigating so App can set its `user` state
+                if (typeof onLoginSuccess === "function") {
+                  try {
+                    onLoginSuccess({ user, token, role: payload.role, id: payload.id });
+                  } catch (e) {
+                    console.warn("onLoginSuccess threw:", e);
+                  }
+                }
+
+                // Show toast
                 toast.success("Login successful! Redirecting...", {
                   autoClose: 1500,
                 });
 
-                // Log the successful login
-                await axios.post(`${API_BASE}/api/logs/add`, {
-                  user_id: res.data.id || null,
-                  action: "login",
-                  details: `User ${form.email} logged in successfully`,
-                  status: "success",
-                });
+                // Log the successful login (fire-and-forget)
+                try {
+                  await axios.post(`${API_BASE}/api/logs/add`, {
+                    user_id: payload.id || null,
+                    action: "login",
+                    details: `User ${form.email} logged in successfully`,
+                    status: "success",
+                  });
+                } catch (logErr) {
+                  console.warn("Failed to log login event:", logErr);
+                }
 
-                // Redirect based on role
+                // Close modal and redirect after a short delay so toast shows
+                setShowLogin(false);
                 setTimeout(() => {
-                  const userRole =
-                    res.data.role || res.data.user?.role || "Mentee";
+                  const userRole = payload.role || user?.role || "Mentee";
                   redirectToDashboard(userRole);
-                  if (typeof onLoginSuccess === "function")
-                    onLoginSuccess(res.data);
-                }, 1500);
+                }, 500);
               } catch (err) {
                 console.error("Login error", err);
 
