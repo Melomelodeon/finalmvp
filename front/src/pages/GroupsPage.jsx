@@ -5,8 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const API_URL = "http://localhost:3000/api/groups";
-const MEMBER_URL = "http://localhost:3000/api/members";
+import { API_BASE } from "../config";
+
+const API_URL = `${API_BASE}/api/groups`;
+const MEMBER_URL = `${API_BASE}/api/members`;
 
 export default function GroupsPage() {
   const navigate = useNavigate();

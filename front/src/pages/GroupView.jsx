@@ -3,7 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Send, X, ArrowLeft } from "lucide-react";
 import { toast } from "react-toastify";
 
-const API_URL = "http://localhost:3000";
+import { API_BASE } from "../config";
+
+const API_URL = `${API_BASE}`;
 
 export default function GroupView() {
   const { id: groupId } = useParams();

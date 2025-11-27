@@ -3,6 +3,8 @@ import { Users, GraduationCap, BookOpen, MessageCircle } from "lucide-react";
 import axios from "axios";
 import Footer from "./components/Footer";
 
+import { API_BASE } from "./config";
+
 export default function AdminDashboard() {
   const [totalUser, setTotalUsers] = useState(0);
   const [active_mentors, setActiveMentors] = useState(0);
@@ -11,7 +13,7 @@ export default function AdminDashboard() {
   const [pending_Mentors, setPendingMentors] = useState([]);
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/users/total") // your PHP endpoint
+      .get(`${API_BASE}/api/users/total`) // your PHP endpoint
       .then((res) => {
         setTotalUsers(res.data.total); // save to state
       })
@@ -19,7 +21,7 @@ export default function AdminDashboard() {
         console.error("Error fetching users:", err);
       });
     axios
-      .get("http://localhost:3000/api/users/totalmentor") // your PHP endpoint
+      .get(`${API_BASE}/api/users/totalmentor`) // your PHP endpoint
       .then((res) => {
         setActiveMentors(res.data.total); // save to state
       })
@@ -27,7 +29,7 @@ export default function AdminDashboard() {
         console.error("Error fetching users:", err);
       });
     axios
-      .get("http://localhost:3000/api/groups/total_groups") // your PHP endpoint
+      .get(`${API_BASE}/api/groups/total_groups`) // your PHP endpoint
       .then((res) => {
         setTotalGroups(res.data.total); // save to state
       })
@@ -35,7 +37,7 @@ export default function AdminDashboard() {
         console.error("Error fetching users:", err);
       });
     axios
-      .get("http://localhost:3000/api/forum/total-posts") // your PHP endpoint
+      .get(`${API_BASE}/api/forum/total-posts`) // your PHP endpoint
       .then((res) => {
         setForumPosts(res.data.total_posts); // save to state
       })
@@ -53,25 +55,25 @@ export default function AdminDashboard() {
   useEffect(() => {
     // Fetch recent users
     axios
-      .get("http://localhost:3000/api/users/recent") // create this endpoint in PHP
+      .get(`${API_BASE}/api/users/recent`) // create this endpoint in PHP
       .then((res) => setRecentUsers(res.data))
       .catch((err) => console.error("Error fetching recent users:", err));
 
     // // // Fetch pending mentors
     axios
-      .get("http://localhost:3000/api/users/pendingMentors")
+      .get(`${API_BASE}/api/users/pendingMentors`)
       .then((res) => setPendingMentors(res.data))
       .catch((err) => console.error("Error fetching pending mentors:", err));
 
     // // // // Fetch user distribution
     axios
-      .get("http://localhost:3000/api/users/distribution")
+      .get(`${API_BASE}/api/users/distribution`)
       .then((res) => setDistribution(res.data))
       .catch((err) => console.error("Error fetching distribution:", err));
 
     // // Fetch system logs
     axios
-      .get("http://localhost:3000/api/logs") // create this endpoint
+      .get(`${API_BASE}/api/logs`) // create this endpoint
       .then((res) => setLogs(res.data))
       .catch((err) => console.error("Error fetching logs:", err));
   }, []);

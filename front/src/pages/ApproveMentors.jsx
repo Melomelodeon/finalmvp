@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Eye, Check, X, Search } from "lucide-react";
 
+import { API_BASE } from "../config";
+
 const USERS_PER_PAGE = 10;
 const ALL_SUBJECTS = ["React", "Node.js", "Marketing", "Design"];
 const formatDate = (dateStr) => new Date(dateStr).toLocaleDateString();
@@ -35,7 +37,7 @@ export default function ApproveMentors() {
 
   // Fetch mentors from backend
   useEffect(() => {
-    fetch("http://localhost:3000/api/mentors/getMentors") // Lavalust endpoint
+    fetch(`${API_BASE}/api/mentors/getMentors`) // Lavalust endpoint
       .then((res) => res.json())
       .then((data) => setMentors(data))
       .catch((err) => console.error("Failed to fetch mentors:", err));
@@ -47,7 +49,7 @@ export default function ApproveMentors() {
     if (!window.confirm(`Are you sure you want to ${action} this mentor?`))
       return;
 
-    fetch(`http://localhost:3000/api/mentors/${id}/${action}`, {
+    fetch(`${API_BASE}/api/mentors/${id}/${action}`, {
       method: "POST",
     })
       .then((res) => res.json())

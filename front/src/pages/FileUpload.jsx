@@ -1,8 +1,9 @@
 // FileUpload.jsx
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { API_BASE } from "../config"; 
 
-const API_URL = "http://localhost:3000";
+const API_URL = `${API_BASE}`;
 
 export default function FileUpload({ groupId, onUploadSuccess }) {
   const [file, setFile] = useState(null);

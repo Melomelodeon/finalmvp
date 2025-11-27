@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Send, X } from "lucide-react";
 import { toast } from "react-toastify";
 
+import { API_BASE } from "../config";
+
 function SessionPage() {
-  const API_URL = "http://localhost:3000";
+  const API_URL = `${API_BASE}`;
   const user = JSON.parse(localStorage.getItem("user"));
 
   const [group, setGroup] = useState(null);

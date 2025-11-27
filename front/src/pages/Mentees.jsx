@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+
+import { API_BASE } from "../config";
+
 import {
   Users,
   Clock,
@@ -50,7 +53,7 @@ const MenteesPage = () => {
   const fetchMentorships = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:3000/api/mentorship");
+      const res = await axios.get(`${API_BASE}/api/mentorship`);
       const all = res.data;
 
       setActiveMentees(
@@ -76,7 +79,7 @@ const MenteesPage = () => {
 
   const handleRequest = async (id, action) => {
     try {
-      const baseURL = "http://localhost:3000/api/mentorships"; // full backend URL
+      const baseURL = `${API_BASE}/api/mentorships`; // full backend URL
 
       if (action === "accept") {
         await axios.put(`${baseURL}/${id}`, { status: "Active" }); // capital A

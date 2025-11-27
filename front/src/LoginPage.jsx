@@ -3,6 +3,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { X, Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
+import { API_BASE } from "./config";
 function LoginPage({
   toggleLogin,
   setShowLogin,
@@ -12,7 +14,7 @@ function LoginPage({
   setShowRegister,
   onLoginSuccess,
 }) {
-  const AUTH_URL = "http://localhost:3000/api/auth/login";
+  const AUTH_URL = `${API_BASE}/api/auth/login`;
 
   const [form, setForm] = useState({
     email: "",
@@ -122,7 +124,7 @@ function LoginPage({
                 });
 
                 // Log the successful login
-                await axios.post("http://localhost:3000/api/logs/add", {
+                await axios.post(`${API_BASE}/api/logs/add`, {
                   user_id: res.data.id || null,
                   action: "login",
                   details: `User ${form.email} logged in successfully`,
@@ -150,7 +152,7 @@ function LoginPage({
                 toast.error(message);
 
                 // Log the failed login attempt
-                await axios.post("http://localhost:3000/api/logs/add", {
+                await axios.post(`${API_BASE}/api/logs/add`, {
                   user_id: null, // Unknown user
                   action: "login",
                   details: `Failed login attempt for ${form.email}`,

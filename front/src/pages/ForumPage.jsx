@@ -3,8 +3,9 @@ import { Search, Plus, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE } from "../config";
 
-const API_URL = "http://localhost:3000/api/forum";
+const API_URL = `${API_BASE}/api/forum`;
 
 const timeAgo = (date) => {
   const diff = (new Date() - new Date(date)) / 1000;

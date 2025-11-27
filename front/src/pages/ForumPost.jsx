@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const API_BASE = "http://localhost:3000/api/forum";
+import { API_BASE } from "../config";
 
 // Helper to show relative time
 const timeAgo = (date) => {

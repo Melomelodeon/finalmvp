@@ -3,7 +3,7 @@ import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { X, Users, Mail, Lock, Eye, EyeOff, Upload } from "lucide-react";
-
+import { API_BASE } from "./config";
 function RegisterPage({
   toggleRegister,
   showPassword,
@@ -11,8 +11,8 @@ function RegisterPage({
   setShowRegister,
   setShowLogin,
 }) {
-  const API_URL = "http://localhost:3000/api/users";
-
+  const API_URL = `${API_BASE}/api/users`;
+const API_AUTH = `${API_BASE}/api/userauth`;
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     first_name: "",
@@ -27,7 +27,7 @@ function RegisterPage({
     status: "Active",
   });
   const [formErrors, setFormErrors] = useState({});
-
+ 
   const validateForm = () => {
     const errors = {};
     if (!form.first_name) errors.first_name = "First name is required";
@@ -379,7 +379,9 @@ function RegisterPage({
             </div>
 
             <div className="flex flex-col gap-2">
-              <button className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-1.5 hover:bg-gray-50 transition text-sm">
+              <button
+             
+               className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-1.5 hover:bg-gray-50 transition text-sm">
                 <img
                   src="https://www.svgrepo.com/show/475656/google-color.svg"
                   alt="Google"
@@ -387,14 +389,7 @@ function RegisterPage({
                 />
                 Continue with Google
               </button>
-              <button className="flex items-center justify-center gap-2 border border-gray-300 rounded-lg py-1.5 hover:bg-gray-50 transition text-sm">
-                <img
-                  src="https://cdn-icons-png.flaticon.com/512/174/174857.png"
-                  alt="LinkedIn"
-                  className="w-4 h-4"
-                />
-                Continue with LinkedIn
-              </button>
+             
             </div>
 
             <p className="text-gray-500 mt-3 text-center text-xs">

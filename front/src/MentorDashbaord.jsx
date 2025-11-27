@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+
+import { API_BASE } from "./config";
 import {
   Users,
   Calendar,
@@ -108,7 +110,7 @@ export default function MentorDashboard() {
   const [feedback, setFeedback] = useState([]);
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(false);
-  const API_URL = "http://localhost:3000";
+  const API_URL = `${API_BASE}`;
   const user = JSON.parse(localStorage.getItem("user"));
   const fetchSessions = async () => {
     if (!user) return;
@@ -144,7 +146,7 @@ export default function MentorDashboard() {
   const fetchMentorships = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:3000/api/mentorship");
+      const res = await axios.get(`${API_BASE}/api/mentorship`);
       const all = res.data;
       // Filter only active and pending mentees
       const activeMentees = all.filter(
@@ -187,7 +189,7 @@ export default function MentorDashboard() {
 
       // API call
       await axios.post(
-        `http://localhost:3000/api/mentors/${requestId}/${action}`
+        `${API_BASE}/api/mentors/${requestId}/${action}`
       );
 
       setToast({

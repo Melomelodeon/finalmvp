@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+import { API_BASE } from "../config";
+
 export default function Topbar({ user }) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -18,7 +20,7 @@ export default function Topbar({ user }) {
   useEffect(() => {
     const fetchAnnouncements = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/announcements");
+        const res = await axios.get(`${API_BASE}/api/announcements`);
         const now = new Date();
 
         // Filter relevant announcements

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+
+import { API_BASE } from "../config";
 import {
   Edit,
   Trash2,
@@ -19,7 +21,7 @@ import {
 } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-const API_URL = "http://localhost:3000/api/users";
+const API_URL = `${API_BASE}/api/users`;
 
 export default function UserManagement() {
   // State

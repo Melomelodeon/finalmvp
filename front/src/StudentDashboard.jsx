@@ -8,6 +8,7 @@ import {
   ArrowRight,
   User,
 } from "lucide-react";
+import ChatbotWidget from "./components/ChatbotWidget";
 
 // --- HELPER FUNCTIONS ---
 const timeAgo = (dateStr) => {
@@ -179,6 +180,7 @@ export default function StudentDashboard({ user }) {
           )}
         </Card>
       </div>
+      <ChatbotWidget />
     </div>
   );
 }
