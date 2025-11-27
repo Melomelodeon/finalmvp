@@ -1,7 +1,9 @@
 FROM php:8.2-apache
 
-# Install PDO MySQL
-RUN docker-php-ext-install pdo pdo_mysql
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git unzip libzip-dev \
+    && docker-php-ext-install pdo pdo_mysql zip
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
@@ -11,6 +13,20 @@ RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/Allo
 
 # Copy backend files into /var/www/html
 COPY backend/ /var/www/html/
+
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Run composer install in backend root
+WORKDIR /var/www/html
+RUN composer install --no-dev --optimize-autoloader
+
+# Run composer install in app subfolder (if needed)
+WORKDIR /var/www/html/app
+RUN composer install --no-dev --optimize-autoloader || true
+
+# Reset workdir
+WORKDIR /var/www/html
 
 # Fix permissions
 RUN chown -R www-data:www-data /var/www/html \
