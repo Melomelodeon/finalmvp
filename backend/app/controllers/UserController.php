@@ -33,7 +33,7 @@ public function total_mentor() {
     {
         $recentUsers = $this->db
             ->table('users')
-            ->order_by('created_at', 'DESC')
+            ->order_by('date_joined', 'DESC')
             ->limit(3)
             ->get_all(); // returns array
 
