@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-import { API_BASE_URL } from "../config";
+import { BASE_URL } from "../config";
 
 // --- Modal Component ---
 const Modal = ({ onClose, children }) => (
@@ -38,7 +38,7 @@ const timeAgo = (dateStr) => {
 
 // --- Main Component ---
 export default function Announcements() {
-  const API_BASE = `${API_BASE_URL}/api`; // LavaLust backend
+  const API_BASE = `${BASE_URL}/api`; // LavaLust backend
   const [user, setUser] = useState(null);
   const [allAnnouncements, setAllAnnouncements] = useState([]);
   const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
