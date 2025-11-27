@@ -143,3 +143,8 @@ $router->delete('/api/announcements/{id}', 'AnnouncementController::delete');
 $router->get('/api/mentees', 'UserController::getMentees');
 $router->get('/api/mentorship', 'MentorshipController::getMentorships');
 $router->get('/api/mentee', 'MentorshipController::getMentees');//getting mentees for mentor
+
+//USERAUTH
+$router->get('/api/userauth', 'AuthController::authenticate');
+
+$router->post('/chatbot/send', 'Chatbot::send');
