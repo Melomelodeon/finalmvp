@@ -5,8 +5,9 @@ class UserController extends Controller {
     public function __construct() {
         parent::__construct();
         $this->call->model("UserModel");
-        
-        
+
+        //changes
+        $this->call->library('MailerLib');
     }
 
     // Get all users
@@ -284,6 +285,60 @@ public function approveMentor($id) {
     // Update mentor status to Active
     $this->UserModel->update($id, ['status' => 'Active']);
     echo json_encode(['message' => 'Mentor approved successfully']);
+
+    //changes
+     $approvedMessage = <<<'EOD'
+            <div style="background:#f8fafc; font-family:Arial, sans-serif; padding:24px; max-width:600px; margin:auto; border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,0.05); font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">
+                <div style="background: linear-gradient(135deg, #60a5fa, #6366f1); border-radius:12px; padding:24px; color:#fff; text-align:center; margin-bottom:24px;">
+                    <img src="https://img.icons8.com/ios-filled/50/ffffff/checked--v1.png" alt="Approved" style="width:40px; height:40px; margin-bottom:12px;" />
+                    <h1 style="margin:0; font-size:22px;">You're officially a PeerConnect Mentor!</h1>
+                    <p style="margin:8px 0 0; font-size:14px; color:#cbd5e1;">
+                        Your application has been approved — welcome to a community where experience drives impact.
+                    </p>
+                </div>
+
+                <div style="background:#ffffff; border:1px solid #e2e8f0; border-radius:12px; padding:20px;">
+                    <p style="font-size:15px; color:#1f2937; margin:0 0 16px;">
+                        We’re excited to have you on board. As a PeerConnect mentor, you’ll empower others through meaningful conversations, actionable advice, and ongoing support. Here’s how to get started:
+                    </p>
+
+                    <div style="display:flex; align-items:flex-start; margin-bottom:16px;">
+                        <div style="width:32px; height:32px; background:#e0f2fe; color:#60a5fa; font-weight:bold; border-radius:50%; text-align:center; line-height:32px; margin-right:12px;">1</div>
+                        <div>
+                            <strong style="color:#111827;">Set up your mentor profile</strong>
+                            <div style="color:#475569; font-size:13px;">Add your bio, expertise, and availability to help us match you with the right peers.</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; align-items:flex-start; margin-bottom:16px;">
+                        <div style="width:32px; height:32px; background:#e0f2fe; color:#60a5fa; font-weight:bold; border-radius:50%; text-align:center; line-height:32px; margin-right:12px;">2</div>
+                        <div>
+                            <strong style="color:#111827;">Launch your first study group</strong>
+                            <div style="color:#475569; font-size:13px;">Choose a focus area like career growth or interview prep, and start building your learning circle.</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; align-items:flex-start; margin-bottom:16px;">
+                        <div style="width:32px; height:32px; background:#e0f2fe; color:#60a5fa; font-weight:bold; border-radius:50%; text-align:center; line-height:32px; margin-right:12px;">3</div>
+                        <div>
+                            <strong style="color:#111827;">Join the conversation</strong>
+                            <div style="color:#475569; font-size:13px;">Engage in our forums to share insights, ask questions, and support fellow mentors and learners.</div>
+                        </div>
+                    </div>
+
+                    <div style="text-align:center; margin-top:24px;">
+                        <a href="http://temp-domain/" style="background-color:#6366f1; color:#fff; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:bold; display:inline-block;">Sign In to Get Started</a>
+                    </div>
+                </div>
+
+                <div style="text-align:center; color:#64748b; font-size:12px; margin-top:24px;">
+                    You’re receiving this email because you applied to become a mentor on PeerConnect.<br>
+                    © PeerConnect • Building growth through real conversation
+                </div>
+            </div>
+            EOD;
+
+    $this->MailerLib->sendMail($user['email'], "You're officially a PeerConnect Mentor!", $approvedMessage);
 }
 
 
