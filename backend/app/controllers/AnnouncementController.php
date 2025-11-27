@@ -5,7 +5,8 @@ class AnnouncementController extends Controller
     {
         parent::__construct();
         //cahnges
-        $this->call->model(['AnnouncementModel', 'UserModel']);
+        $this->call->model('AnnouncementModel');
+        $this->call->model('UserModel');
         $this->call->library('MailerLib');
 
         // CORS headers
@@ -59,12 +60,12 @@ class AnnouncementController extends Controller
 
         $id = $this->AnnouncementModel->insertAnnouncement($data);
 
-/*         if ($id) {
+        if ($id) {
             echo json_encode(['message' => 'Announcement created successfully', 'id' => $id]);
         } else {
             http_response_code(500);
             echo json_encode(['error' => 'Failed to create announcement']);
-        } */
+        }
 
         //changes
         $emails = $this->UserModel->getActiveUserEmails($input['target_role']);
