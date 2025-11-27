@@ -59,17 +59,16 @@ class AnnouncementController extends Controller
 
         $id = $this->AnnouncementModel->insertAnnouncement($data);
 
-        if ($id) {
+/*         if ($id) {
             echo json_encode(['message' => 'Announcement created successfully', 'id' => $id]);
         } else {
             http_response_code(500);
             echo json_encode(['error' => 'Failed to create announcement']);
-        }
+        } */
 
         //changes
         $emails = $this->UserModel->getActiveUserEmails($input['target_role']);
 
-        echo json_encode($emails);
         if (!empty($emails)) {
             foreach ($emails as $row) {
                 $message = <<<EOD
