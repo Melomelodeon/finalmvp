@@ -1,7 +1,7 @@
 <?php
 
 
-header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Origin: https://finalmvp-frontend.onrender.com");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Credentials: true");
@@ -143,8 +143,5 @@ $router->delete('/api/announcements/{id}', 'AnnouncementController::delete');
 $router->get('/api/mentees', 'UserController::getMentees');
 $router->get('/api/mentorship', 'MentorshipController::getMentorships');
 $router->get('/api/mentee', 'MentorshipController::getMentees');//getting mentees for mentor
-
-//USERAUTH
-$router->get('/api/userauth', 'AuthController::authenticate');
 
 $router->post('/chatbot/send', 'Chatbot::send');
