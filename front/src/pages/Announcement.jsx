@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-import { BASE_URL } from "../config";
+import { API_BASE } from "../config";
 
 // --- Modal Component ---
 const Modal = ({ onClose, children }) => (
@@ -38,7 +38,7 @@ const timeAgo = (dateStr) => {
 
 // --- Main Component ---
 export default function Announcements() {
-  const API_BASE = `${BASE_URL}/api`; // LavaLust backend
+  const API_BASE_URL = `${API_BASE}/api`; // LavaLust backend
   const [user, setUser] = useState(null);
   const [allAnnouncements, setAllAnnouncements] = useState([]);
   const [filteredAnnouncements, setFilteredAnnouncements] = useState([]);
@@ -63,7 +63,7 @@ export default function Announcements() {
       const currentUser = userData?.data || userData;
       setUser(currentUser);
 
-      const res = await axios.get(`${API_BASE}/announcements`);
+      const res = await axios.get(`${API_BASE_URL}/announcements`);
       const announcements = res.data;
 
       const now = new Date();
@@ -108,7 +108,7 @@ export default function Announcements() {
     setIsSubmitting(true);
 
     try {
-      await axios.post(`${API_BASE}/announcements`, {
+      await axios.post(`${API_BASE_URL}/announcements`, {
         ...form,
         created_by: user.id,
       });
@@ -138,7 +138,7 @@ export default function Announcements() {
       return;
 
     try {
-      await axios.delete(`${API_BASE}/announcements/${id}`);
+      await axios.delete(`${API_BASE_URL}/announcements/${id}`);
       setAllAnnouncements((prev) => prev.filter((a) => a.id !== id));
 
       // REFRESH ANNOUNCEMENTS AFTER SUCCESS
