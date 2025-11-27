@@ -9,7 +9,7 @@ class ForumController extends Controller {
         $this->call->model("ForumComment");
 
         // Headers for CORS
-        header("Access-Control-Allow-Origin: https://finalmvp-frontend.onrender.com/");
+        header("Access-Control-Allow-Origin: https://finalmvp-frontend.onrender.com");
         header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
         header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
         header("Content-Type: application/json");
