@@ -282,20 +282,8 @@ public function approveMentor($id) {
         return;
     }
 
-     echo json_encode([
-            "success" => true,
-            "message" => "Mentor {$id} approved successfully",
-            "data" => [
-                "id" => $id,
-                "action" => "approve",
-                "timestamp" => date("Y-m-d H:i:s")
-            ]
-        ]);
-
-    
     // Update mentor status to Active
     $this->UserModel->update($id, ['status' => 'Active']);
-    echo json_encode(['message' => 'Mentor approved successfully']);
 
     //changes
      $approvedMessage = <<<'EOD'
@@ -351,12 +339,25 @@ public function approveMentor($id) {
 
     $mailResult = $this->MailerLib->sendMail($user['email'], "You're officially a PeerConnect Mentor!", $approvedMessage);
     
+    // Log to server
     if ($mailResult) {
-        error_log("Mailer SUCCESS: Email sent to {$user['email']} for mentor approval test");
+        error_log("Mailer SUCCESS: Email sent to {$user['email']} for mentor approval");
     } else {
         error_log("Mailer FAILED: Could not send email to {$user['email']} for mentor approval");
     }
 
+    // Return single JSON response with all info
+    echo json_encode([
+        "success" => true,
+        "message" => "Mentor {$id} approved successfully",
+        "email_sent" => $mailResult,
+        "email_to" => $user['email'],
+        "data" => [
+            "id" => $id,
+            "action" => "approve",
+            "timestamp" => date("Y-m-d H:i:s")
+        ]
+    ]);
 }
 
 
