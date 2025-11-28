@@ -275,7 +275,7 @@ $mentees = $this->UserModel->db
 // Approve mentor (set status to Active)
 public function approveMentor($id) {
     header('Content-Type: application/json');
-      try {
+
     $user = $this->UserModel->find($id);
     if (!$user) {
         echo json_encode(['error' => 'Mentor not found']);
@@ -291,14 +291,6 @@ public function approveMentor($id) {
                 "timestamp" => date("Y-m-d H:i:s")
             ]
         ]);
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo json_encode([
-            "success" => false,
-            "message" => "Failed to approve mentor",
-            "error" => $e->getMessage()
-        ]);
-    }
 
     
     // Update mentor status to Active
@@ -357,7 +349,13 @@ public function approveMentor($id) {
             </div>
             EOD;
 
-    $this->MailerLib->sendMail($user['email'], "You're officially a PeerConnect Mentor!", $approvedMessage);
+    $mailResult = $this->MailerLib->sendMail($user['email'], "You're officially a PeerConnect Mentor!", $approvedMessage);
+    
+    if ($mailResult) {
+        error_log("Mailer SUCCESS: Email sent to {$user['email']} for mentor approval");
+    } else {
+        error_log("Mailer FAILED: Could not send email to {$user['email']} for mentor approval");
+    }
 }
 
 
