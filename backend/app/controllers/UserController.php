@@ -275,13 +275,32 @@ $mentees = $this->UserModel->db
 // Approve mentor (set status to Active)
 public function approveMentor($id) {
     header('Content-Type: application/json');
-
+      try {
     $user = $this->UserModel->find($id);
     if (!$user) {
         echo json_encode(['error' => 'Mentor not found']);
         return;
     }
 
+     echo json_encode([
+            "success" => true,
+            "message" => "Mentor {$id} approved successfully",
+            "data" => [
+                "id" => $id,
+                "action" => "approve",
+                "timestamp" => date("Y-m-d H:i:s")
+            ]
+        ]);
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode([
+            "success" => false,
+            "message" => "Failed to approve mentor",
+            "error" => $e->getMessage()
+        ]);
+
+
+    
     // Update mentor status to Active
     $this->UserModel->update($id, ['status' => 'Active']);
     echo json_encode(['message' => 'Mentor approved successfully']);
