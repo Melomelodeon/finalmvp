@@ -68,7 +68,7 @@ class AnnouncementController extends Controller
         }
 
         //changes
-        $emails = $this->UserModel->getActiveUserEmails($input['target_role']);
+/*         $emails = $this->UserModel->getActiveUserEmails($input['target_role']);
 
         if (!empty($emails)) {
             foreach ($emails as $row) {
@@ -88,7 +88,7 @@ class AnnouncementController extends Controller
                     $message
                 );
             }
-        }
+        } */
 
     }
 
