@@ -10,6 +10,8 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 class MailerLib
 {
     private $apiKey = 're_2jMnA7Si_5qmUbHGycYMAxFGgDP73tkZA';
+    public $lastError = null;
+    public $lastResponse = null;
 
     public function __construct()
     {
@@ -18,6 +20,9 @@ class MailerLib
 
     public function sendMail($email, $subject, $body)
     {
+        $this->lastError = null;
+        $this->lastResponse = null;
+
         $data = [
             'from'    => 'PeerConnect <onboarding@resend.dev>',
             'to'      => $email,
@@ -39,12 +44,16 @@ class MailerLib
         $curlError = curl_error($ch);
         curl_close($ch);
 
+        $this->lastResponse = $response;
+
         if ($curlError) {
+            $this->lastError = "cURL error: " . $curlError;
             error_log("Resend cURL error: " . $curlError);
             return false;
         }
 
         if ($httpCode !== 200) {
+            $this->lastError = "HTTP {$httpCode}: " . $response;
             error_log("Resend API error (HTTP {$httpCode}): " . $response);
             return false;
         }
