@@ -298,7 +298,7 @@ public function approveMentor($id) {
             "message" => "Failed to approve mentor",
             "error" => $e->getMessage()
         ]);
-
+    }
 
     
     // Update mentor status to Active
@@ -359,6 +359,7 @@ public function approveMentor($id) {
 
     $this->MailerLib->sendMail($user['email'], "You're officially a PeerConnect Mentor!", $approvedMessage);
 }
+
 
 
 // Reject mentor (set status to Rejected)
