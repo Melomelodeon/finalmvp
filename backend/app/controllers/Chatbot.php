@@ -2,7 +2,7 @@
 
 class Chatbot extends Controller
 {
-    private $apiKey = "AIzaSyARAz7js-zr7niAtE6WGI-77Zjdaz2Kbt4";
+    private $apiKey = "AIzaSyAI0mdZI9_SEFWIGyY2l_Rm5n-GHdq86eg";
 
     public function send()
     {

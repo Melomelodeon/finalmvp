@@ -352,10 +352,11 @@ public function approveMentor($id) {
     $mailResult = $this->MailerLib->sendMail($user['email'], "You're officially a PeerConnect Mentor!", $approvedMessage);
     
     if ($mailResult) {
-        error_log("Mailer SUCCESS: Email sent to {$user['email']} for mentor approval");
+        error_log("Mailer SUCCESS: Email sent to {$user['email']} for mentor approval test");
     } else {
         error_log("Mailer FAILED: Could not send email to {$user['email']} for mentor approval");
     }
+
 }
 
 
