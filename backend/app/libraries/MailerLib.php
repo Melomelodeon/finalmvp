@@ -4,15 +4,12 @@ defined('PREVENT_DIRECT_ACCESS') OR exit('No direct script access allowed');
 /**
  * Library: MailerLib
  * 
- * Automatically generated via CLI.
+ * Uses Resend HTTP API for email delivery (works on Render free tier).
  */
-
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
 
 class MailerLib
 {
+    private $apiKey = 're_2jMnA7Si_5qmUbHGycYMAxFGgDP73tkZA';
 
     public function __construct()
     {
@@ -21,32 +18,37 @@ class MailerLib
 
     public function sendMail($email, $subject, $body)
     {
-        //Create an instance; passing `true` enables exceptions
-        $mail = new PHPMailer(true);
+        $data = [
+            'from'    => 'PeerConnect <onboarding@resend.dev>',
+            'to'      => $email,
+            'subject' => $subject,
+            'html'    => $body,
+        ];
 
-        try {
-            //Server settings
-            $mail->isSMTP();                                                    //Send using SMTP
-            $mail->Host = 'smtp.gmail.com';                                     //Set the SMTP server to send through
-            $mail->SMTPAuth = true;                                             //Enable SMTP authentication
-            $mail->Username = 'melomelodeon@gmail.com';                         //SMTP username
-            $mail->Password = 'bobj xvlh gtur wnsd';                            //SMTP password
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;                    //Enable implicit TLS encryption
-            $mail->Port = 465;//465                                                  //TCP port to connect to; use 587 if you have set 
-            $mail->setFrom('melomelodeon@gmail.com', 'Mailer');
+        $ch = curl_init('https://api.resend.com/emails');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $this->apiKey,
+            'Content-Type: application/json',
+        ]);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-            //Recipient
-            $mail->addAddress($email);
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
 
-            //Content
-            $mail->isHTML(true);                                        //Set email format to HTML
-            $mail->Subject = $subject;
-            $mail->Body = $body;
-            $mail->AltBody = strip_tags($body);
-
-            $mail->send();
-        } catch (Exception $e) {
-            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        if ($curlError) {
+            error_log("Resend cURL error: " . $curlError);
+            return false;
         }
+
+        if ($httpCode !== 200) {
+            error_log("Resend API error (HTTP {$httpCode}): " . $response);
+            return false;
+        }
+
+        return true;
     }
 }
