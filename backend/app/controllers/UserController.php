@@ -352,6 +352,7 @@ public function approveMentor($id) {
         "message" => "Mentor {$id} approved successfully",
         "email_sent" => $mailResult,
         "email_to" => $user['email'],
+        "email_error" => $this->MailerLib->lastError,
         "data" => [
             "id" => $id,
             "action" => "approve",
