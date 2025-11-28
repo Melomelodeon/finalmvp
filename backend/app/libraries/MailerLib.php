@@ -32,7 +32,7 @@ class MailerLib
             $mail->Username = 'melomelodeon@gmail.com';                         //SMTP username
             $mail->Password = 'bobj xvlh gtur wnsd';                            //SMTP password
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;                    //Enable implicit TLS encryption
-            $mail->Port = 587;//465                                                  //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+            $mail->Port = 465;//465                                                  //TCP port to connect to; use 587 if you have set 
             $mail->setFrom('melomelodeon@gmail.com', 'Mailer');
 
             //Recipient
