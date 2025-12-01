@@ -1,8 +1,9 @@
-import { React, useState } from "react";
+import { React, useState, useRef } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { X, Eye, EyeOff, Mail, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import ReCAPTCHA from "react-google-recaptcha";
 
 import { API_BASE } from "./config";
 function LoginPage({
@@ -24,6 +25,8 @@ function LoginPage({
   const [formErrors, setFormErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const recaptchaRef = useRef(null);
   const navigate = useNavigate();
 
   const redirectToDashboard = (role) => {
@@ -97,6 +100,7 @@ function LoginPage({
               else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
                 errors.email = "Enter a valid email";
               if (!form.password) errors.password = "Password is required";
+              if (!captchaToken) errors.captcha = "Please complete the reCAPTCHA";
               setFormErrors(errors);
               if (Object.keys(errors).length) return;
 
@@ -108,6 +112,7 @@ function LoginPage({
                   email: form.email,
                   password: form.password,
                   remember: form.remember,
+                  recaptcha_token: captchaToken,
                 });
 
                 // Normalize response payload and persist auth/user reliably
@@ -185,6 +190,12 @@ function LoginPage({
                   details: `Failed login attempt for ${form.email}`,
                   status: "error",
                 });
+
+                // Reset reCAPTCHA on error
+                if (recaptchaRef.current) {
+                  recaptchaRef.current.reset();
+                  setCaptchaToken("");
+                }
               } finally {
                 setSubmitting(false);
               }
@@ -293,6 +304,19 @@ function LoginPage({
             {serverError && (
               <p className="text-red-600 text-sm">{serverError}</p>
             )}
+
+            {/* reCAPTCHA */}
+            <div className="flex flex-col items-center">
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                onChange={(token) => setCaptchaToken(token)}
+                onExpired={() => setCaptchaToken("")}
+              />
+              {formErrors.captcha && (
+                <p className="text-red-600 text-sm mt-1">{formErrors.captcha}</p>
+              )}
+            </div>
 
             {/* Login Button */}
             <button

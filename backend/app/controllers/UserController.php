@@ -154,10 +154,28 @@ public function distribution()
     $input = json_decode(file_get_contents('php://input'), true);
     $email = $input['email'] ?? $_POST['email'] ?? null;
     $password = $input['password'] ?? $_POST['password'] ?? null;
+    $recaptchaToken = $input['recaptcha_token'] ?? $_POST['recaptcha_token'] ?? null;
 
     if (empty($email) || empty($password)) {
         http_response_code(400);
         echo json_encode(['error' => 'Email and password are required']);
+        return;
+    }
+
+    // Verify reCAPTCHA
+    if (empty($recaptchaToken)) {
+        http_response_code(400);
+        echo json_encode(['error' => 'reCAPTCHA verification required']);
+        return;
+    }
+
+    $recaptcha = new \ReCaptcha\ReCaptcha(getenv('RECAPTCHA_SECRET_KEY'));
+    $resp = $recaptcha->verify($recaptchaToken, $_SERVER['REMOTE_ADDR']);
+
+    if (!$resp->isSuccess()) {
+        http_response_code(400);
+        $errors = $resp->getErrorCodes();
+        echo json_encode(['error' => 'reCAPTCHA verification failed', 'details' => $errors]);
         return;
     }
 
