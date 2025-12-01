@@ -256,6 +256,7 @@ export default function MentorDashboard() {
           {/* LEFT COLUMN */}
           <div className="lg:col-span-2 space-y-8">
             {/* Quick Actions */}
+            {/*
             <Card title="Quick Actions">
               <div className="flex flex-wrap gap-4">
                 <a
@@ -283,6 +284,7 @@ export default function MentorDashboard() {
                 </a>
               </div>
             </Card>
+                  */}
 
             {/* Pending Mentorship Requests
             {pendingRequests.length > 0 && (
