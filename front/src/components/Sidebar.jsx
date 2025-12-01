@@ -88,11 +88,11 @@ export default function Sidebar({ user }) {
               icon={<GraduationCap />}
               text="Find Mentor"
             />
-            <SidebarLink
+            {/* <SidebarLink
               to="/progress"
               icon={<TrendingUp />}
               text="My Progress"
-            />
+            /> */}
           </>
         )}
 

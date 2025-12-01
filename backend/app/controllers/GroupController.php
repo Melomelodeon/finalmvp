@@ -76,9 +76,9 @@ error_log($input);
     $user_id = $data['user_id'] ?? null; // frontend sends this
 
 $user = $this->UserModel->find($user_id);
-error_log(print_r($user, true));  // ✅ Properly log array as string
+error_log(print_r($user, true));  //  Properly log array as string
 // or
-error_log(json_encode($user));     // ✅ Log as JSON string
+error_log(json_encode($user));     // Log as JSON string
     if ($user && in_array($user['role'], ['Admin', 'Mentor'])) {
         // Step 4: Auto-add to group_members
         $memberData = [
@@ -211,6 +211,7 @@ public function add_member() {
         ]);
     }
 }
+
 
     public function update_member($group_member_id) {
         $data = json_decode(file_get_contents('php://input'), true);

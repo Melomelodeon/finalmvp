@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import ChatbotWidget from "./components/ChatbotWidget";
 
+import { API_BASE } from "./config";
 // --- HELPER FUNCTIONS ---
 const timeAgo = (dateStr) => {
   const seconds = Math.floor((new Date() - new Date(dateStr)) / 1000);
@@ -71,42 +72,68 @@ const EmptyState = ({ icon: Icon, title, message }) => (
 );
 
 // --- MAIN COMPONENT ---
-export default function StudentDashboard({ user }) {
+export default function StudentDashboard() {
   const [sessions, setSessions] = useState([]);
+  const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
+  const user = JSON.parse(localStorage.getItem("user"));
+  
+   const fetchSessions = async () => {
+    console.log('User data:', user);
+    if (!user) return;
+    setLoading(true);
 
-  // Fetch sessions joined by the student
-  useEffect(() => {
-    if (!user?.id) return;
+    try {
+      // Fetch all groups
+      const res = await fetch(`${API_BASE}/api/groups`);
+      const groupsData = await res.json();
+      console.log('Groups:', groupsData);
+      setGroups(Array.isArray(groupsData) ? groupsData : []);
 
-    const fetchSessions = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost/backend/api/sessions/user/${user.id}`
-        );
-        const data = await response.json();
-
-        // Optional: filter only upcoming sessions
-        const upcoming = data.filter(
-          (s) => new Date(s.session_date) >= new Date()
-        );
-
-        setSessions(upcoming);
-      } catch (error) {
-        console.error("Error fetching sessions:", error);
-      } finally {
-        setLoading(false);
+      // Fetch sessions for ALL groups (student can join any)
+      let allSessions = [];
+      for (const group of groupsData) {
+        try {
+          const resSessions = await fetch(
+            `${API_BASE}/api/sessions/${group.id}`
+          );
+          const sessionsData = await resSessions.json();
+          console.log(`Sessions for group ${group.id}:`, sessionsData);
+          
+          if (Array.isArray(sessionsData.sessions)) {
+            // Add group info to each session for display
+            const sessionsWithGroup = sessionsData.sessions.map(s => ({
+              ...s,
+              group_name: group.name,
+              group_subject: group.subject
+            }));
+            allSessions = [...allSessions, ...sessionsWithGroup];
+          }
+        } catch (err) {
+          console.error(`Error fetching sessions for group ${group.id}:`, err);
+        }
       }
-    };
+      
+      console.log('All sessions:', allSessions);
+      setSessions(allSessions);
+    } catch (err) {
+      console.error('Error fetching data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchSessions();
-  }, [user]);
+
+    useEffect(()=>{
+      fetchSessions();
+    },[])
+ 
 
   return (
     <div className="min-h-screen font-sans bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-extrabold text-gray-900 mb-8 border-b pb-2">
-          Welcome back, {user?.name || "Student"}!
+          Welcome back, {user?.first_name || "Student"}!
         </h1>
 
         {/* Stats Section */}
@@ -118,8 +145,8 @@ export default function StudentDashboard({ user }) {
             color="bg-green-600"
           />
           <StatCard
-            title="Groups Joined"
-            value={3}
+            title="Groups Available"
+            value={groups.length}
             icon={Users}
             color="bg-blue-600"
           />
