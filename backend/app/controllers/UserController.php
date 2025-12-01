@@ -326,7 +326,7 @@ public function approveMentor($id) {
                     </div>
 
                     <div style="text-align:center; margin-top:24px;">
-                        <a href="http://temp-domain/" style="background-color:#6366f1; color:#fff; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:bold; display:inline-block;">Sign In to Get Started</a>
+                        <a href="https://finalmvp-frontend.onrender.com/" style="background-color:#6366f1; color:#fff; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:bold; display:inline-block;">Sign In to Get Started</a>
                     </div>
                 </div>
 
