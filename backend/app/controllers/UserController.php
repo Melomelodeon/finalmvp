@@ -80,7 +80,7 @@ public function distribution()
             $target = $uploadDir . $filename;
             
             if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $target)) {
-                $profileImage = "https://finalmvp.onrender.com/public/uploads/" . $filename;
+                $profileImage = getenv('BACKEND_URL') . "/public/uploads/" . $filename;
             }
         }
 
@@ -116,7 +116,7 @@ public function distribution()
             $target = $uploadDir . $filename;
             
             if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $target)) {
-                $profileImage = "https://finalmvp.onrender.com/public/uploads/" . $filename;
+                $profileImage = getenv('BACKEND_URL') . "/public/uploads/" . $filename;
             }
         }
 
@@ -162,21 +162,27 @@ public function distribution()
         return;
     }
 
-    // Verify reCAPTCHA
-    if (empty($recaptchaToken)) {
-        http_response_code(400);
-        echo json_encode(['error' => 'reCAPTCHA verification required']);
-        return;
-    }
+    // Check if running in development mode (localhost)
+    $isDevelopment = (strpos($_SERVER['HTTP_HOST'] ?? '', 'localhost') !== false || 
+                      strpos($_SERVER['HTTP_HOST'] ?? '', '127.0.0.1') !== false);
 
-    $recaptcha = new \ReCaptcha\ReCaptcha(getenv('RECAPTCHA_SECRET_KEY'));
-    $resp = $recaptcha->verify($recaptchaToken, $_SERVER['REMOTE_ADDR']);
+    // Verify reCAPTCHA (skip in development mode)
+    if (!$isDevelopment) {
+        if (empty($recaptchaToken)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'reCAPTCHA verification required']);
+            return;
+        }
 
-    if (!$resp->isSuccess()) {
-        http_response_code(400);
-        $errors = $resp->getErrorCodes();
-        echo json_encode(['error' => 'reCAPTCHA verification failed', 'details' => $errors]);
-        return;
+        $recaptcha = new \ReCaptcha\ReCaptcha(getenv('RECAPTCHA_SECRET_KEY'));
+        $resp = $recaptcha->verify($recaptchaToken, $_SERVER['REMOTE_ADDR']);
+
+        if (!$resp->isSuccess()) {
+            http_response_code(400);
+            $errors = $resp->getErrorCodes();
+            echo json_encode(['error' => 'reCAPTCHA verification failed', 'details' => $errors]);
+            return;
+        }
     }
 
     // Find user by email

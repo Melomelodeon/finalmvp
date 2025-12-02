@@ -11,6 +11,7 @@ import {
   X,
   ArrowRight,
 } from "lucide-react";
+import WeatherWidget from "./components/WeatherWidget";
 
 // --- HELPER COMPONENTS ---
 const StarRating = ({ rating }) => (
@@ -391,6 +392,9 @@ export default function MentorDashboard() {
 
           {/* RIGHT COLUMN */}
           <div className="lg:col-span-1 space-y-8">
+            {/* Weather Widget */}
+            <WeatherWidget city="Manila,PH" className="mb-6" />
+            
             {/* Upcoming Sessions */}
             <Card
               title="Upcoming Sessions"
