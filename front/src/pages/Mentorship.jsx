@@ -2,6 +2,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { BookOpen, CheckCircle } from "lucide-react";
 
+import { API_BASE } from "../config";
+
 // Reusable Button
 const Button = ({
   children,
@@ -168,7 +170,7 @@ export default function MentorshipPage() {
   useEffect(() => {
     // Fetch all mentors
     axios
-      .get("http://localhost:3000/api/mentors/getMentor")
+      .get(`${API_BASE}/api/mentors/getMentor`)
       .then((res) => setMentors(res.data))
       .catch(() =>
         setNotification({ message: "Failed to load mentors", type: "error" })
@@ -176,7 +178,7 @@ export default function MentorshipPage() {
 
     // Fetch current mentorship
     axios
-      .get(`http://localhost:3000/api/mentorships?student_id=${student_id}`)
+      .get(`${API_BASE}/api/mentorships?student_id=${student_id}`)
       .then((res) => {
         if (res.data && res.data.length > 0) {
           setMyMentor(res.data[0]);
@@ -189,7 +191,7 @@ export default function MentorshipPage() {
     if (!selectedMentor) return;
 
     axios
-      .post("http://localhost:3000/api/mentorships", {
+      .post(`${API_BASE}/api/mentorships`, {
         mentor_id: selectedMentor.id,
         student_id,
         subject,

@@ -5,11 +5,12 @@ class AnnouncementController extends Controller
     {
         parent::__construct();
         //cahnges
-        $this->call->model(['AnnouncementModel', 'UserModel']);
+        $this->call->model('AnnouncementModel');
+        $this->call->model('UserModel');
         $this->call->library('MailerLib');
 
         // CORS headers
-        header("Access-Control-Allow-Origin: http://localhost:5173");
+        header("Access-Control-Allow-Origin: " . getenv('FRONTEND_URL'));
         header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
         header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
         header("Content-Type: application/json");
@@ -69,7 +70,6 @@ class AnnouncementController extends Controller
         //changes
         $emails = $this->UserModel->getActiveUserEmails($input['target_role']);
 
-        echo json_encode($emails);
         if (!empty($emails)) {
             foreach ($emails as $row) {
                 $message = <<<EOD

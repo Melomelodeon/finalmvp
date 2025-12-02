@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const API_BASE = "http://localhost:3000/api/forum";
+import { API_BASE } from "../config";
 
 // Helper to show relative time
 const timeAgo = (date) => {
@@ -25,7 +25,7 @@ export default function ForumPost() {
   // Fetch thread + answers + comments
   const fetchPost = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/thread/${id}`);
+      const res = await axios.get(`${API_BASE}/api/forum/thread/${id}`);
       const threadData = res.data.thread || null;
       const answersData = Array.isArray(res.data.answers)
         ? res.data.answers
@@ -63,7 +63,7 @@ export default function ForumPost() {
     const userName = localStorage.getItem("user_name") || "You";
 
     try {
-      const response = await axios.post(`${API_BASE}/reply`, {
+      const response = await axios.post(`${API_BASE}/api/forum/reply`, {
         post_id: id,
         user_id: userId,
         content: newReply,

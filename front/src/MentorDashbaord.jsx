@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+
+import { API_BASE } from "./config";
 import {
   Users,
   Calendar,
@@ -9,6 +11,7 @@ import {
   X,
   ArrowRight,
 } from "lucide-react";
+import WeatherWidget from "./components/WeatherWidget";
 
 // --- HELPER COMPONENTS ---
 const StarRating = ({ rating }) => (
@@ -108,7 +111,7 @@ export default function MentorDashboard() {
   const [feedback, setFeedback] = useState([]);
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(false);
-  const API_URL = "http://localhost:3000";
+  const API_URL = `${API_BASE}`;
   const user = JSON.parse(localStorage.getItem("user"));
   const fetchSessions = async () => {
     if (!user) return;
@@ -144,7 +147,7 @@ export default function MentorDashboard() {
   const fetchMentorships = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:3000/api/mentorship");
+      const res = await axios.get(`${API_BASE}/api/mentorship`);
       const all = res.data;
       // Filter only active and pending mentees
       const activeMentees = all.filter(
@@ -187,7 +190,7 @@ export default function MentorDashboard() {
 
       // API call
       await axios.post(
-        `http://localhost:3000/api/mentors/${requestId}/${action}`
+        `${API_BASE}/api/mentors/${requestId}/${action}`
       );
 
       setToast({
@@ -254,6 +257,7 @@ export default function MentorDashboard() {
           {/* LEFT COLUMN */}
           <div className="lg:col-span-2 space-y-8">
             {/* Quick Actions */}
+            {/*
             <Card title="Quick Actions">
               <div className="flex flex-wrap gap-4">
                 <a
@@ -281,8 +285,9 @@ export default function MentorDashboard() {
                 </a>
               </div>
             </Card>
+                  */}
 
-            {/* Pending Mentorship Requests */}
+            {/* Pending Mentorship Requests
             {pendingRequests.length > 0 && (
               <Card title="Pending Mentorship Requests" id="mentees-pending">
                 <table className="min-w-full divide-y divide-gray-200">
@@ -329,7 +334,7 @@ export default function MentorDashboard() {
                   </tbody>
                 </table>
               </Card>
-            )}
+            )} */}
 
             {/* My Mentees */}
             <Card
@@ -349,12 +354,8 @@ export default function MentorDashboard() {
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Name
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Email
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Action
-                      </th>
+                    
+                     
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -372,17 +373,15 @@ export default function MentorDashboard() {
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {mentee.email}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                       
+                        {/* <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <a
                             href={`#mentee-view-${mentee.id}`}
                             className="text-white bg-indigo-500 hover:bg-indigo-600 font-semibold py-1.5 px-3 rounded-xl text-sm transition duration-150 shadow-md"
                           >
                             View Report
                           </a>
-                        </td>
+                        </td> */}
                       </tr>
                     ))}
                   </tbody>
@@ -393,6 +392,9 @@ export default function MentorDashboard() {
 
           {/* RIGHT COLUMN */}
           <div className="lg:col-span-1 space-y-8">
+            {/* Weather Widget */}
+            <WeatherWidget city="Manila,PH" className="mb-6" />
+            
             {/* Upcoming Sessions */}
             <Card
               title="Upcoming Sessions"

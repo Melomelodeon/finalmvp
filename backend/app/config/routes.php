@@ -1,7 +1,7 @@
 <?php
 
 
-header("Access-Control-Allow-Origin: http://localhost:5173");
+header("Access-Control-Allow-Origin: " . getenv('FRONTEND_URL'));
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Credentials: true");
@@ -143,3 +143,11 @@ $router->delete('/api/announcements/{id}', 'AnnouncementController::delete');
 $router->get('/api/mentees', 'UserController::getMentees');
 $router->get('/api/mentorship', 'MentorshipController::getMentorships');
 $router->get('/api/mentee', 'MentorshipController::getMentees');//getting mentees for mentor
+
+// Weather API routes
+$router->get('/api/weather/current', 'WeatherController::getCurrentWeather');
+$router->post('/api/weather/multiple', 'WeatherController::getMultipleCitiesWeather');
+$router->post('/api/weather/config', 'WeatherController::updateConfig');
+$router->get('/api/weather/health', 'WeatherController::healthCheck');
+
+$router->post('/chatbot/send', 'Chatbot::send');

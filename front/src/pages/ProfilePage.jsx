@@ -4,7 +4,9 @@ import { toast, ToastContainer } from "react-toastify";
 import { Camera } from "lucide-react";
 import "react-toastify/dist/ReactToastify.css";
 
-const API_URL = "http://localhost:3000/api/users";
+import { API_BASE } from "../config";
+
+const API_URL = `${API_BASE}/api/users`;
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);

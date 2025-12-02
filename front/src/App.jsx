@@ -29,7 +29,7 @@ import SystemLogs from "./pages/SystemLogs";
 // import NotificationsPage from "./pages/NotificationPage";
 import MentorshipPage from "./pages/Mentorship";
 import MenteesPage from "./pages/Mentees";
-import StudentProgress from "./pages/StudentProgress";
+//import StudentProgress from "./pages/StudentProgress";
 import FeedbackDashboard from "./pages/Feedback";
 import MentorDashboard from "./MentorDashbaord";
 import UserManagement from "./pages/UserManagement";
@@ -118,7 +118,10 @@ export default function App() {
             path="/"
             element={
               <PeerConnectLanding
-                onLoginSuccess={(userData) => setUser(userData.user)}
+                onLoginSuccess={(userData) => {
+                  const u = userData?.user || userData || null;
+                  if (u) setUser(u);
+                }}
               />
             }
           />
@@ -187,10 +190,10 @@ export default function App() {
             path="/mentees"
             element={user ? <MenteesPage /> : <Navigate to="/" />}
           />
-          <Route
+          {/* <Route
             path="/progress"
             element={user ? <StudentProgress /> : <Navigate to="/" />}
-          />
+          /> */}
           <Route
             path="/feedback"
             element={user ? <FeedbackDashboard /> : <Navigate to="/" />}

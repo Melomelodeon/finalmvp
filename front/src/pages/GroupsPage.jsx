@@ -5,8 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const API_URL = "http://localhost:3000/api/groups";
-const MEMBER_URL = "http://localhost:3000/api/members";
+import { API_BASE } from "../config";
+
+const API_URL = `${API_BASE}/api/groups`;
+const MEMBER_URL = `${API_BASE}/api/members`;
 
 export default function GroupsPage() {
   const navigate = useNavigate();
@@ -130,32 +132,35 @@ export default function GroupsPage() {
   };
 
   // Join group
-  const handleJoin = async (group) => {
-    if (!user?.id) return toast.error("Please login to join a group");
-    if (groupActionLoading[group.id]) return;
-
-    setGroupActionLoading((prev) => ({ ...prev, [group.id]: true }));
-    try {
-      const res = await fetch(`${MEMBER_URL}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ group_id: group.id, user_id: user.id }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Failed to join group");
-      }
-
-      await fetchGroups();
-      toast.success("Successfully joined the group!");
-    } catch (err) {
-      console.error("Join error:", err);
-      toast.error(`Error joining group: ${err.message}`);
-    } finally {
-      setGroupActionLoading((prev) => ({ ...prev, [group.id]: false }));
-    }
-  };
+ 
+   // Join group
+   const handleJoin = async (group) => {
+     if (!user?.id) return toast.error("Please login to join a group");
+     if (groupActionLoading[group.id]) return;
+ 
+     setGroupActionLoading((prev) => ({ ...prev, [group.id]: true }));
+     try {
+       const res = await fetch(`${MEMBER_URL}`, {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify({ group_id: group.id, user_id: user.id }),
+       });
+ 
+       if (!res.ok) {
+         const errorData = await res.json();
+         throw new Error(errorData.error || "Failed to join group");
+       }
+ 
+       await fetchGroups();
+       toast.success("Successfully joined the group!");
+     } catch (err) {
+       console.error("Join error:", err);
+       toast.error(`Error joining group: ${err.message}`);
+     } finally {
+       setGroupActionLoading((prev) => ({ ...prev, [group.id]: false }));
+     }
+   };
+ 
 
   // Leave group
   const handleLeave = async (group) => {

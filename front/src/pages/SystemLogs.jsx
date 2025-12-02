@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+import { API_BASE } from "../config";
+
 // Status badge component
 const StatusBadge = ({ status }) => (
   <span
@@ -35,7 +37,7 @@ export default function SystemLogs() {
   const fetchLogs = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:3000/api/logs");
+      const res = await axios.get(`${API_BASE}/api/logs`);
       setLogs(res.data.reverse()); // latest first
     } catch (err) {
       console.error("Failed to fetch logs:", err);

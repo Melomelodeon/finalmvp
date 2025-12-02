@@ -33,7 +33,7 @@ public function total_mentor() {
     {
         $recentUsers = $this->db
             ->table('users')
-            ->order_by('created_at', 'DESC')
+            ->order_by('date_joined', 'DESC')
             ->limit(3)
             ->get_all(); // returns array
 
@@ -80,7 +80,7 @@ public function distribution()
             $target = $uploadDir . $filename;
             
             if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $target)) {
-                $profileImage = "http://localhost:3000/public/uploads/" . $filename;
+                $profileImage = getenv('BACKEND_URL') . "/public/uploads/" . $filename;
             }
         }
 
@@ -116,7 +116,7 @@ public function distribution()
             $target = $uploadDir . $filename;
             
             if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $target)) {
-                $profileImage = "http://localhost:3000/public/uploads/" . $filename;
+                $profileImage = getenv('BACKEND_URL') . "/public/uploads/" . $filename;
             }
         }
 
@@ -154,11 +154,35 @@ public function distribution()
     $input = json_decode(file_get_contents('php://input'), true);
     $email = $input['email'] ?? $_POST['email'] ?? null;
     $password = $input['password'] ?? $_POST['password'] ?? null;
+    $recaptchaToken = $input['recaptcha_token'] ?? $_POST['recaptcha_token'] ?? null;
 
     if (empty($email) || empty($password)) {
         http_response_code(400);
         echo json_encode(['error' => 'Email and password are required']);
         return;
+    }
+
+    // Check if running in development mode (localhost)
+    $isDevelopment = (strpos($_SERVER['HTTP_HOST'] ?? '', 'localhost') !== false || 
+                      strpos($_SERVER['HTTP_HOST'] ?? '', '127.0.0.1') !== false);
+
+    // Verify reCAPTCHA (skip in development mode)
+    if (!$isDevelopment) {
+        if (empty($recaptchaToken)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'reCAPTCHA verification required']);
+            return;
+        }
+
+        $recaptcha = new \ReCaptcha\ReCaptcha(getenv('RECAPTCHA_SECRET_KEY'));
+        $resp = $recaptcha->verify($recaptchaToken, $_SERVER['REMOTE_ADDR']);
+
+        if (!$resp->isSuccess()) {
+            http_response_code(400);
+            $errors = $resp->getErrorCodes();
+            echo json_encode(['error' => 'reCAPTCHA verification failed', 'details' => $errors]);
+            return;
+        }
     }
 
     // Find user by email
@@ -284,7 +308,6 @@ public function approveMentor($id) {
 
     // Update mentor status to Active
     $this->UserModel->update($id, ['status' => 'Active']);
-    echo json_encode(['message' => 'Mentor approved successfully']);
 
     //changes
      $approvedMessage = <<<'EOD'
@@ -327,7 +350,7 @@ public function approveMentor($id) {
                     </div>
 
                     <div style="text-align:center; margin-top:24px;">
-                        <a href="http://temp-domain/" style="background-color:#6366f1; color:#fff; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:bold; display:inline-block;">Sign In to Get Started</a>
+                        <a href="https://finalmvp-frontend.onrender.com/" style="background-color:#6366f1; color:#fff; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:bold; display:inline-block;">Sign In to Get Started</a>
                     </div>
                 </div>
 
@@ -338,8 +361,30 @@ public function approveMentor($id) {
             </div>
             EOD;
 
-    $this->MailerLib->sendMail($user['email'], "You're officially a PeerConnect Mentor!", $approvedMessage);
+    $mailResult = $this->MailerLib->sendMail($user['email'], "You're officially a PeerConnect Mentor!", $approvedMessage);
+    
+    // Log to server
+    if ($mailResult) {
+        error_log("Mailer SUCCESS: Email sent to {$user['email']} for mentor approval");
+    } else {
+        error_log("Mailer FAILED: Could not send email to {$user['email']} for mentor approval");
+    }
+
+    // Return single JSON response with all info
+    echo json_encode([
+        "success" => true,
+        "message" => "Mentor {$id} approved successfully",
+        "email_sent" => $mailResult,
+        "email_to" => $user['email'],
+        "email_error" => $this->MailerLib->lastError,
+        "data" => [
+            "id" => $id,
+            "action" => "approve",
+            "timestamp" => date("Y-m-d H:i:s")
+        ]
+    ]);
 }
+
 
 
 // Reject mentor (set status to Rejected)
