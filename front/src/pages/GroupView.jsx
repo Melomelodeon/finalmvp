@@ -4,6 +4,7 @@ import { Send, X, ArrowLeft } from "lucide-react";
 import { toast } from "react-toastify";
 
 import { API_BASE } from "../config";
+import MapWidget from "../components/MapWidget";
 
 const API_URL = `${API_BASE}`;
 
@@ -409,6 +410,9 @@ export default function GroupView() {
           </div>
         </div>
       )}
+
+      {/* Map Widget */}
+      <MapWidget />
     </div>
   );
 }
